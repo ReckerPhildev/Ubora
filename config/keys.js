@@ -1,5 +1,3 @@
-dbPassword = 'mongodb+srv://recker:<password>@test0-ierkt.mongodb.net/test?retryWrites=true&w=majority';
+dbPassword = 'mongodb+srv://gatarelib:<Password>@test0-ierkt.mongodb.net/test?retryWrites=true&w=majority';
 
-module.exports = {
-    mongoURI: dbPassword
-};
+export const mongoURI = dbPassword;

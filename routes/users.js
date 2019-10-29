@@ -1,10 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcryptjs');
-const passport = require('passport');
+import { Router } from 'express';
+const router = Router();
+import { genSalt, hash as _hash } from 'bcryptjs';
+import { authenticate } from 'passport';
 // Load User model
-const User = require('../models/User');
-const { forwardAuthenticated } = require('../config/auth');
+import User, { findOne } from '../models/User';
+import { forwardAuthenticated } from '../config/auth';
 
 // Login Page
 router.get('/login', forwardAuthenticated, (req, res) => res.render('login'));
@@ -38,7 +38,7 @@ router.post('/register', (req, res) => {
       password2
     });
   } else {
-    User.findOne({ email: email }).then(user => {
+    findOne({ email: email }).then(user => {
       if (user) {
         errors.push({ msg: 'Email already exists' });
         res.render('register', {
@@ -55,8 +55,8 @@ router.post('/register', (req, res) => {
           password
         });
 
-        bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
+        genSalt(10, (err, salt) => {
+          _hash(newUser.password, salt, (err, hash) => {
             if (err) throw err;
             newUser.password = hash;
             newUser
@@ -78,7 +78,7 @@ router.post('/register', (req, res) => {
 
 // Login
 router.post('/login', (req, res, next) => {
-  passport.authenticate('local', {
+  authenticate('local', {
     successRedirect: '/dashboard',
     failureRedirect: '/users/login',
     failureFlash: true
@@ -92,4 +92,4 @@ router.get('/logout', (req, res) => {
   res.redirect('/users/login');
 });
 
-module.exports = router;
+export default router;

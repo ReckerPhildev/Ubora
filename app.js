@@ -1,9 +1,9 @@
-const express = require('express');
-const expressLayouts = require('express-ejs-layouts');
-const mongoose = require('mongoose');
-const passport = require('passport');
-const flash = require('connect-flash');
-const session = require('express-session');
+import express, { urlencoded } from 'express';
+import expressLayouts from 'express-ejs-layouts';
+import { connect } from 'mongoose';
+import passport, { initialize, session as _session } from 'passport';
+import flash from 'connect-flash';
+import session from 'express-session';
 
 
 
@@ -13,11 +13,10 @@ const app = express();
 require('./config/passport')(passport);
 
 // DB Config
-const db = require('./config/keys').mongoURI;
+import { mongoURI as db } from './config/keys';
 
 // Connect to MongoDB
-mongoose
-  .connect(
+connect(
     db,
     { useNewUrlParser: true }
   )
@@ -29,7 +28,7 @@ app.use(expressLayouts);
 app.set('view engine', 'ejs');
 
 // Express body parser
-app.use(express.urlencoded({ extended: true }));
+app.use(urlencoded({ extended: true }));
 
 // Express session
 app.use(
@@ -41,8 +40,8 @@ app.use(
 );
 
 // Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(initialize());
+app.use(_session());
 
 // Connect flash
 app.use(flash());
